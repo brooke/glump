@@ -7,12 +7,19 @@
 //
 
 #include "ContactListener.h"
+#include "b2PolygonAndCircleContact.h"
+#include "b2EdgeAndCircleContact.h"
+#include "FixtureUserData.h"
 
 void ContactListener::BeginContact(b2Contact *contact) {
-    if (contact->GetFixtureA()->GetUserData() != NULL) {
-        ((int *)contact->GetFixtureA()->GetUserData())[0] = 0;
+    b2PolygonAndCircleContact *platformContact = dynamic_cast<b2PolygonAndCircleContact *>(contact);
+    if (platformContact) {
+        ((BallFixtureUD *)contact->GetFixtureB()->GetUserData())->jumpCount = 0;
+        return;
     }
-    else if (contact->GetFixtureB()->GetUserData() != NULL) {
-        ((int *)contact->GetFixtureB()->GetUserData())[0] = 0;
+
+    b2EdgeAndCircleContact *groundContact = dynamic_cast<b2EdgeAndCircleContact *>(contact);
+    if (groundContact) {
+        ((BallFixtureUD *)contact->GetFixtureB()->GetUserData())->dead = true;
     }
 }

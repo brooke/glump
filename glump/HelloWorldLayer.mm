@@ -58,7 +58,6 @@
         b2EdgeShape groundEdge;
         b2FixtureDef boxShapeDef;
         
-        jumpCount[0] = 0;
         jumping = false;
         boxShapeDef.shape = &groundEdge;
         
@@ -69,12 +68,15 @@
         b2CircleShape circle;
         circle.m_radius = 26.0/PTM_RATIO;
         
+        m_ballUD = new BallFixtureUD();
+        m_ballUD->jumpCount = 0;
+        
         b2FixtureDef ballShapeDef;
         ballShapeDef.shape = &circle;
         ballShapeDef.density = 1.0f;
         ballShapeDef.friction = 0.0f;
         ballShapeDef.restitution = 0.0f;
-        ballShapeDef.userData = jumpCount;
+        ballShapeDef.userData = m_ballUD;
         m_body->CreateFixture(&ballShapeDef);
         
         m_world->SetContactListener(m_listener);
@@ -95,7 +97,7 @@
         int height = 3 + arc4random() % 3;
         int distance = 2 + arc4random() % (platformLength - 3);
         [self addPlatformOfLength:platformLength withPosX:platformXPos posY:platformYPos];
-        [self addItemWithPosX:(platformXPos + distance)*2 posY:(platformYPos + height)*2 andGoodness:good];
+        //[self addItemWithPosX:(platformXPos + distance)*2 posY:(platformYPos + height)*2 andGoodness:good];
         
         platformXPos = platformLength + platformXPos + distanceToNext;
         platformLength = (3 + (arc4random() % 4))*2;
@@ -156,10 +158,10 @@
 }
 
 - (void)jump {
-    if (jumpCount[0] < 2) {
+    if (m_ballUD->jumpCount < 2) {
         b2Vec2 force = b2Vec2(0, 15);
         m_body->SetLinearVelocity(force);
-        jumpCount[0]++;
+        m_ballUD->jumpCount++;
         jumping = true;
         [self scheduleOnce:@selector(endJump) delay:0.3f];
     }
@@ -177,6 +179,67 @@
     [self endJump];
 }
 
+- (void)freeze {
+    for(b2Body *b = m_world->GetBodyList(); b; b=b->GetNext()) {
+        b->SetLinearVelocity(b2Vec2(0, 0));
+    }
+}
+
+- (void)restart {
+    b2Body *b = m_world->GetBodyList();
+    while (b) {
+        b2Body *bn = b->GetNext();
+        if (b != m_body) {
+            [((CCNode *)b->GetUserData()) removeFromParentAndCleanup:YES];
+            m_world->DestroyBody(b);
+        }
+        b = bn;
+    }
+    [m_player removeAllChildrenWithCleanup:YES];
+    [m_player setVisible:YES];
+    [m_player setOpacity:255];
+    
+    // Create edges around the entire screen
+    b2BodyDef groundBodyDef;
+    groundBodyDef.position.Set(0,0);
+    
+    b2Body *groundBody = m_world->CreateBody(&groundBodyDef);
+    b2EdgeShape groundEdge;
+    b2FixtureDef boxShapeDef;
+    
+    jumping = false;
+    m_ballUD->jumpCount = 0;
+    m_ballUD->dead = false;
+    boxShapeDef.shape = &groundEdge;
+    
+    //wall definitions
+    CGSize winSize = [CCDirector sharedDirector].winSize;
+    groundEdge.Set(b2Vec2(0,0), b2Vec2(winSize.width/PTM_RATIO, 0));
+    groundBody->CreateFixture(&boxShapeDef);
+    
+    m_body->SetTransform(b2Vec2(100/PTM_RATIO, 300/PTM_RATIO), 0.0f);
+    [self generatePlatforms];
+}
+
+- (void)die {
+    [m_player removeAllChildren];
+    [self freeze];
+    CCSprite *explosionSprite = [CCSprite spriteWithFile:@"Flare.png"];
+    explosionSprite.scale = 0.1f;
+    CGSize ballSize = [m_player contentSize];
+    explosionSprite.position = ccp(ballSize.width/2,ballSize.height/2);
+    [m_player addChild:explosionSprite];
+    CCScaleTo *scaleFlare = [CCScaleTo actionWithDuration:0.3f scale:1.0f];
+    CCDelayTime *delayAction = [CCDelayTime actionWithDuration:0.3f];
+    CCFadeOut *fadePlayer = [CCFadeOut actionWithDuration:0.05f];
+    CCFadeOut *fadeFlare = [CCFadeOut actionWithDuration:0.05f];
+    CCSequence *playerSequence = [CCSequence actionOne:delayAction two:fadePlayer];
+    CCSequence *explosionSequence = [CCSequence actionOne:scaleFlare two:fadeFlare];
+    [explosionSprite runAction:explosionSequence];
+    [m_player runAction:playerSequence];
+    [self scheduleOnce:@selector(restart) delay:1.0];
+}
+
 - (void)tick:(ccTime) dt {
     if (jumping) {
         b2Vec2 force = b2Vec2(0, 15);
@@ -192,14 +255,20 @@
         }
     }
     
+    if (((BallFixtureUD *)m_body->GetFixtureList()->GetUserData())->dead) {
+        [self die];
+        ((BallFixtureUD *)m_body->GetFixtureList()->GetUserData())->dead = false;
+    }
 }
 
 - (void)dealloc {
     delete m_world;
     delete m_listener;
+    delete m_ballUD;
     m_body = NULL;
     m_world = NULL;
     m_listener = NULL;
+    m_ballUD = NULL;
     
     [super dealloc];
 }

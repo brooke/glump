@@ -10,6 +10,7 @@
 #import "cocos2d.h"
 #import "Box2D.h"
 #import "ContactListener.h"
+#import "FixtureUserData.h"
 
 #define PTM_RATIO 32.0
 
@@ -24,7 +25,7 @@
     
     CCTexture2D *m_itemsTexture;
 
-    int jumpCount[1];
+    BallFixtureUD *m_ballUD;
     bool jumping;
 }
 

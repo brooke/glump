@@ -198,6 +198,8 @@
 		B465E8881715AF350018323A /* platformLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E8801715AF350018323A /* platformLeft@2x.png */; };
 		B465E8891715AF350018323A /* platformRight.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E8811715AF350018323A /* platformRight.png */; };
 		B465E88A1715AF350018323A /* platformRight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E8821715AF350018323A /* platformRight@2x.png */; };
+		B465E88C1715FCBA0018323A /* Flare.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E88B1715FCBA0018323A /* Flare.png */; };
+		B465E88F171600840018323A /* FixtureUserData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B465E88D171600840018323A /* FixtureUserData.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -590,6 +592,9 @@
 		B465E8801715AF350018323A /* platformLeft@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platformLeft@2x.png"; sourceTree = "<group>"; };
 		B465E8811715AF350018323A /* platformRight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = platformRight.png; sourceTree = "<group>"; };
 		B465E8821715AF350018323A /* platformRight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platformRight@2x.png"; sourceTree = "<group>"; };
+		B465E88B1715FCBA0018323A /* Flare.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Flare.png; sourceTree = "<group>"; };
+		B465E88D171600840018323A /* FixtureUserData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FixtureUserData.cpp; sourceTree = "<group>"; };
+		B465E88E171600840018323A /* FixtureUserData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FixtureUserData.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -667,6 +672,7 @@
 		B465E6311713568F0018323A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B465E88B1715FCBA0018323A /* Flare.png */,
 				B465E87B1715AF350018323A /* platformCenter1.png */,
 				B465E87C1715AF350018323A /* platformCenter1@2x.png */,
 				B465E87D1715AF350018323A /* platformCenter2.png */,
@@ -1219,6 +1225,8 @@
 				B465E873171372860018323A /* ContactListener.h */,
 				B465E8781715A0490018323A /* PlatformSprite.h */,
 				B465E8791715A0490018323A /* PlatformSprite.m */,
+				B465E88D171600840018323A /* FixtureUserData.cpp */,
+				B465E88E171600840018323A /* FixtureUserData.h */,
 			);
 			path = Game;
 			sourceTree = "<group>";
@@ -1297,6 +1305,7 @@
 				B465E8881715AF350018323A /* platformLeft@2x.png in Resources */,
 				B465E8891715AF350018323A /* platformRight.png in Resources */,
 				B465E88A1715AF350018323A /* platformRight@2x.png in Resources */,
+				B465E88C1715FCBA0018323A /* Flare.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1466,6 +1475,7 @@
 				B465E85C171356920018323A /* GLES-Render.mm in Sources */,
 				B465E874171372860018323A /* ContactListener.cpp in Sources */,
 				B465E87A1715A0490018323A /* PlatformSprite.m in Sources */,
+				B465E88F171600840018323A /* FixtureUserData.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
