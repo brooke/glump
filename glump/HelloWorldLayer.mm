@@ -33,6 +33,8 @@
         m_player.position = ccp(100, 300);
         [self addChild:m_player];
         
+        m_itemsTexture = [[CCTextureCache sharedTextureCache] addImage:@"blocks.png"];
+        
         // Create a world
         b2Vec2 gravity = b2Vec2(0.0f, -50.0f);
         m_world = new b2World(gravity);
@@ -89,35 +91,68 @@
     int platformXPos = 10;
     
     for (int i = 0; i < 20; i++) {
-        PlatformSprite *platform = [PlatformSprite platformWithTiles:platformLength];
-        platform.position = ccp(platformXPos*PTM_RATIO*2, platformYPos*PTM_RATIO*2);
-        [self addChild:platform];
-        
-        // Create ball body and shape
-        b2BodyDef platformBodyDef;
-        platformBodyDef.type = b2_kinematicBody;
-        platformBodyDef.position.Set(platformXPos*2, platformYPos*2);
-        platformBodyDef.userData = platform;
-        b2Body *platformBody = m_world->CreateBody(&platformBodyDef);
-        
-        b2PolygonShape rectangle;
-        rectangle.SetAsBox(platformLength, 1);
-        
-        b2FixtureDef platformShapeDef;
-        platformShapeDef.shape = &rectangle;
-        platformShapeDef.density = 1.0f;
-        platformShapeDef.friction = 0.0f;
-        platformShapeDef.restitution = 0.0f;
-        platformBody->CreateFixture(&platformShapeDef);
-        
-        b2Vec2 force = b2Vec2(-15, 0);
-        platformBody->SetLinearVelocity(force);
+        int good = arc4random() % 2;
+        int height = 3 + arc4random() % 3;
+        int distance = 2 + arc4random() % (platformLength - 3);
+        [self addPlatformOfLength:platformLength withPosX:platformXPos posY:platformYPos];
+        [self addItemWithPosX:(platformXPos + distance)*2 posY:(platformYPos + height)*2 andGoodness:good];
         
         platformXPos = platformLength + platformXPos + distanceToNext;
         platformLength = (3 + (arc4random() % 4))*2;
         distanceToNext = (4 + (arc4random() % 2));
         platformYPos = 1 + (arc4random() % 3);
     }
+}
+
+- (void)addPlatformOfLength:(int)platformLength withPosX:(int)platformXPos posY:(int)platformYPos {
+    PlatformSprite *platform = [PlatformSprite platformWithTiles:platformLength];
+    platform.position = ccp(platformXPos*PTM_RATIO*2, platformYPos*PTM_RATIO*2);
+    [self addChild:platform];
+    
+    // Create ball body and shape
+    b2BodyDef platformBodyDef;
+    platformBodyDef.type = b2_kinematicBody;
+    platformBodyDef.position.Set(platformXPos*2, platformYPos*2);
+    platformBodyDef.userData = platform;
+    b2Body *platformBody = m_world->CreateBody(&platformBodyDef);
+    
+    b2PolygonShape rectangle;
+    rectangle.SetAsBox(platformLength, 1);
+    
+    b2FixtureDef platformShapeDef;
+    platformShapeDef.shape = &rectangle;
+    platformShapeDef.density = 1.0f;
+    platformShapeDef.friction = 0.0f;
+    platformShapeDef.restitution = 0.0f;
+    platformBody->CreateFixture(&platformShapeDef);
+    
+    b2Vec2 force = b2Vec2(-15, 0);
+    platformBody->SetLinearVelocity(force);
+}
+
+- (void)addItemWithPosX:(int)itemXPos posY:(int)itemYPos andGoodness:(int)good {
+    CCSprite *itemSprite = [CCSprite spriteWithTexture:m_itemsTexture rect:CGRectMake(good*32, 32, 32, 32)];
+    itemSprite.position = ccp(itemXPos*PTM_RATIO, itemYPos*PTM_RATIO);
+    [self addChild:itemSprite];
+    
+    b2BodyDef itemBodyDef;
+    itemBodyDef.type = b2_kinematicBody;
+    itemBodyDef.position.Set(itemXPos, itemYPos);
+    itemBodyDef.userData = itemSprite;
+    b2Body *itemBody = m_world->CreateBody(&itemBodyDef);
+    
+    b2PolygonShape rectangle;
+    rectangle.SetAsBox(1, 1);
+    
+    b2FixtureDef itemShapeDef;
+    itemShapeDef.shape = &rectangle;
+    itemShapeDef.density = 1.0f;
+    itemShapeDef.friction = 0.0f;
+    itemShapeDef.restitution = 0.0f;
+    itemBody->CreateFixture(&itemShapeDef);
+    
+    b2Vec2 force = b2Vec2(-15, 0);
+    itemBody->SetLinearVelocity(force);
 }
 
 - (void)jump {

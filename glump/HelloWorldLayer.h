@@ -21,6 +21,8 @@
     NSMutableArray *m_platforms;
     NSMutableArray *m_targets;
     ContactListener *m_listener;
+    
+    CCTexture2D *m_itemsTexture;
 
     int jumpCount[1];
     bool jumping;
