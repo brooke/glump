@@ -186,6 +186,18 @@
 		B465E859171356920018323A /* IntroLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = B465E858171356920018323A /* IntroLayer.mm */; };
 		B465E85C171356920018323A /* GLES-Render.mm in Sources */ = {isa = PBXBuildFile; fileRef = B465E85B171356920018323A /* GLES-Render.mm */; };
 		B465E85E171356920018323A /* blocks.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E85D171356920018323A /* blocks.png */; };
+		B465E86A171357570018323A /* ball.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E868171357570018323A /* ball.png */; };
+		B465E86B171357570018323A /* ball-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E869171357570018323A /* ball-hd.png */; };
+		B465E874171372860018323A /* ContactListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B465E872171372860018323A /* ContactListener.cpp */; };
+		B465E87A1715A0490018323A /* PlatformSprite.m in Sources */ = {isa = PBXBuildFile; fileRef = B465E8791715A0490018323A /* PlatformSprite.m */; };
+		B465E8831715AF350018323A /* platformCenter1.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E87B1715AF350018323A /* platformCenter1.png */; };
+		B465E8841715AF350018323A /* platformCenter1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E87C1715AF350018323A /* platformCenter1@2x.png */; };
+		B465E8851715AF350018323A /* platformCenter2.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E87D1715AF350018323A /* platformCenter2.png */; };
+		B465E8861715AF350018323A /* platformCenter2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E87E1715AF350018323A /* platformCenter2@2x.png */; };
+		B465E8871715AF350018323A /* platformLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E87F1715AF350018323A /* platformLeft.png */; };
+		B465E8881715AF350018323A /* platformLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E8801715AF350018323A /* platformLeft@2x.png */; };
+		B465E8891715AF350018323A /* platformRight.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E8811715AF350018323A /* platformRight.png */; };
+		B465E88A1715AF350018323A /* platformRight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E8821715AF350018323A /* platformRight@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -564,6 +576,20 @@
 		B465E85A171356920018323A /* GLES-Render.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GLES-Render.h"; sourceTree = "<group>"; };
 		B465E85B171356920018323A /* GLES-Render.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "GLES-Render.mm"; sourceTree = "<group>"; };
 		B465E85D171356920018323A /* blocks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blocks.png; path = Resources/blocks.png; sourceTree = "<group>"; };
+		B465E868171357570018323A /* ball.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ball.png; path = Resources/ball.png; sourceTree = "<group>"; };
+		B465E869171357570018323A /* ball-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ball-hd.png"; path = "Resources/ball-hd.png"; sourceTree = "<group>"; };
+		B465E872171372860018323A /* ContactListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContactListener.cpp; sourceTree = "<group>"; };
+		B465E873171372860018323A /* ContactListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactListener.h; sourceTree = "<group>"; };
+		B465E8781715A0490018323A /* PlatformSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformSprite.h; sourceTree = "<group>"; };
+		B465E8791715A0490018323A /* PlatformSprite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlatformSprite.m; sourceTree = "<group>"; };
+		B465E87B1715AF350018323A /* platformCenter1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = platformCenter1.png; sourceTree = "<group>"; };
+		B465E87C1715AF350018323A /* platformCenter1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platformCenter1@2x.png"; sourceTree = "<group>"; };
+		B465E87D1715AF350018323A /* platformCenter2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = platformCenter2.png; sourceTree = "<group>"; };
+		B465E87E1715AF350018323A /* platformCenter2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platformCenter2@2x.png"; sourceTree = "<group>"; };
+		B465E87F1715AF350018323A /* platformLeft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = platformLeft.png; sourceTree = "<group>"; };
+		B465E8801715AF350018323A /* platformLeft@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platformLeft@2x.png"; sourceTree = "<group>"; };
+		B465E8811715AF350018323A /* platformRight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = platformRight.png; sourceTree = "<group>"; };
+		B465E8821715AF350018323A /* platformRight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platformRight@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -622,6 +648,7 @@
 		B465E6301713568F0018323A /* glump */ = {
 			isa = PBXGroup;
 			children = (
+				B465E871171372760018323A /* Game */,
 				B465E851171356920018323A /* AppDelegate.h */,
 				B465E852171356920018323A /* AppDelegate.mm */,
 				B465E854171356920018323A /* HelloWorldLayer.h */,
@@ -640,6 +667,16 @@
 		B465E6311713568F0018323A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B465E87B1715AF350018323A /* platformCenter1.png */,
+				B465E87C1715AF350018323A /* platformCenter1@2x.png */,
+				B465E87D1715AF350018323A /* platformCenter2.png */,
+				B465E87E1715AF350018323A /* platformCenter2@2x.png */,
+				B465E87F1715AF350018323A /* platformLeft.png */,
+				B465E8801715AF350018323A /* platformLeft@2x.png */,
+				B465E8811715AF350018323A /* platformRight.png */,
+				B465E8821715AF350018323A /* platformRight@2x.png */,
+				B465E868171357570018323A /* ball.png */,
+				B465E869171357570018323A /* ball-hd.png */,
 				B465E6321713568F0018323A /* Default.png */,
 				B465E6341713568F0018323A /* Default@2x.png */,
 				B465E6361713568F0018323A /* Default-568h@2x.png */,
@@ -1175,6 +1212,17 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		B465E871171372760018323A /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				B465E872171372860018323A /* ContactListener.cpp */,
+				B465E873171372860018323A /* ContactListener.h */,
+				B465E8781715A0490018323A /* PlatformSprite.h */,
+				B465E8791715A0490018323A /* PlatformSprite.m */,
+			);
+			path = Game;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1239,6 +1287,16 @@
 				B465E6481713568F0018323A /* iTunesArtwork in Resources */,
 				B465E79E171356910018323A /* ChangeLog in Resources */,
 				B465E85E171356920018323A /* blocks.png in Resources */,
+				B465E86A171357570018323A /* ball.png in Resources */,
+				B465E86B171357570018323A /* ball-hd.png in Resources */,
+				B465E8831715AF350018323A /* platformCenter1.png in Resources */,
+				B465E8841715AF350018323A /* platformCenter1@2x.png in Resources */,
+				B465E8851715AF350018323A /* platformCenter2.png in Resources */,
+				B465E8861715AF350018323A /* platformCenter2@2x.png in Resources */,
+				B465E8871715AF350018323A /* platformLeft.png in Resources */,
+				B465E8881715AF350018323A /* platformLeft@2x.png in Resources */,
+				B465E8891715AF350018323A /* platformRight.png in Resources */,
+				B465E88A1715AF350018323A /* platformRight@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1406,6 +1464,8 @@
 				B465E856171356920018323A /* HelloWorldLayer.mm in Sources */,
 				B465E859171356920018323A /* IntroLayer.mm in Sources */,
 				B465E85C171356920018323A /* GLES-Render.mm in Sources */,
+				B465E874171372860018323A /* ContactListener.cpp in Sources */,
+				B465E87A1715A0490018323A /* PlatformSprite.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1523,6 +1583,7 @@
 				B465E863171356920018323A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
