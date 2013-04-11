@@ -97,7 +97,7 @@
         int height = 3 + arc4random() % 3;
         int distance = 2 + arc4random() % (platformLength - 3);
         [self addPlatformOfLength:platformLength withPosX:platformXPos posY:platformYPos];
-        //[self addItemWithPosX:(platformXPos + distance)*2 posY:(platformYPos + height)*2 andGoodness:good];
+        [self addItemWithPosX:(platformXPos - platformLength/2 + distance)*2 posY:(platformYPos + height)*2 andGoodness:good];
         
         platformXPos = platformLength + platformXPos + distanceToNext;
         platformLength = (3 + (arc4random() % 4))*2;
@@ -121,11 +121,14 @@
     b2PolygonShape rectangle;
     rectangle.SetAsBox(platformLength, 1);
     
+    PlatformFixtureUD *platformUD = new PlatformFixtureUD();
+    
     b2FixtureDef platformShapeDef;
     platformShapeDef.shape = &rectangle;
     platformShapeDef.density = 1.0f;
     platformShapeDef.friction = 0.0f;
     platformShapeDef.restitution = 0.0f;
+    platformShapeDef.userData = platformUD;
     platformBody->CreateFixture(&platformShapeDef);
     
     b2Vec2 force = b2Vec2(-15, 0);
@@ -146,11 +149,15 @@
     b2PolygonShape rectangle;
     rectangle.SetAsBox(1, 1);
     
+    ItemFixtureUD *itemUD = new ItemFixtureUD();
+    itemUD->good = good;
+    
     b2FixtureDef itemShapeDef;
     itemShapeDef.shape = &rectangle;
     itemShapeDef.density = 1.0f;
     itemShapeDef.friction = 0.0f;
     itemShapeDef.restitution = 0.0f;
+    itemShapeDef.userData = itemUD;
     itemBody->CreateFixture(&itemShapeDef);
     
     b2Vec2 force = b2Vec2(-15, 0);
@@ -191,6 +198,9 @@
         b2Body *bn = b->GetNext();
         if (b != m_body) {
             [((CCNode *)b->GetUserData()) removeFromParentAndCleanup:YES];
+            for (b2Fixture *f=b->GetFixtureList(); f; f=f->GetNext()) {
+                delete f->GetUserData();
+            }
             m_world->DestroyBody(b);
         }
         b = bn;
