@@ -12,8 +12,6 @@
 #import "ContactListener.h"
 #import "FixtureUserData.h"
 
-#define PTM_RATIO 32.0
-
 @interface HelloWorldLayer : CCLayer {
     
     b2World *m_world;
@@ -24,6 +22,8 @@
     ContactListener *m_listener;
     
     CCTexture2D *m_itemsTexture;
+    CCTexture2D *m_walkingTexture;
+    CCTexture2D *m_jumpingTexture;
 
     BallFixtureUD *m_ballUD;
     bool jumping;

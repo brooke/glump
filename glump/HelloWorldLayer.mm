@@ -9,6 +9,7 @@
 
 #import "HelloWorldLayer.h"
 #import "PlatformSprite.h"
+#import "Globals.h"
 #import <stdlib.h>
 
 @implementation HelloWorldLayer
@@ -29,8 +30,11 @@
         CGSize winSize = [CCDirector sharedDirector].winSize;
         
         // Create sprite and add it to the layer
-        m_player = [CCSprite spriteWithFile:@"ball.png" rect:CGRectMake(0, 0, 52, 52)];
-        m_player.position = ccp(100, 300);
+        m_jumpingTexture = [[CCTextureCache sharedTextureCache] addImage:@"ball_jumping.png"];
+        m_walkingTexture = [[CCTextureCache sharedTextureCache] addImage:@"ball_walking.png"];
+        m_player = [CCSprite spriteWithTexture:m_walkingTexture];
+        [m_player setScale:SPRITE_RATIO];
+        m_player.position = ccp(100, 100);
         [self addChild:m_player];
         
         m_itemsTexture = [[CCTextureCache sharedTextureCache] addImage:@"blocks.png"];
@@ -43,7 +47,7 @@
         // Create ball body and shape
         b2BodyDef ballBodyDef;
         ballBodyDef.type = b2_dynamicBody;
-        ballBodyDef.position.Set(100/PTM_RATIO, 300/PTM_RATIO);
+        ballBodyDef.position.Set(100/PTM_RATIO, 100/PTM_RATIO);
         ballBodyDef.userData = m_player;
         ballBodyDef.linearDamping = 1.0;
         m_body = m_world->CreateBody(&ballBodyDef);
@@ -66,7 +70,7 @@
         groundBody->CreateFixture(&boxShapeDef);
         
         b2CircleShape circle;
-        circle.m_radius = 26.0/PTM_RATIO;
+        circle.m_radius = 1;
         
         m_ballUD = new BallFixtureUD();
         m_ballUD->jumpCount = 0;
@@ -91,9 +95,9 @@
     int platformYPos = 1;
     int distanceToNext = 5;
     int platformXPos = 10;
+    int good = 1;
     
     for (int i = 0; i < 20; i++) {
-        int good = arc4random() % 2;
         int height = 3 + arc4random() % 3;
         int distance = 2 + arc4random() % (platformLength - 3);
         [self addPlatformOfLength:platformLength withPosX:platformXPos posY:platformYPos];
@@ -103,6 +107,7 @@
         platformLength = (3 + (arc4random() % 4))*2;
         distanceToNext = (4 + (arc4random() % 2));
         platformYPos = 1 + (arc4random() % 3);
+        good = arc4random() % 2;
     }
 }
 
@@ -121,7 +126,7 @@
     b2PolygonShape rectangle;
     rectangle.SetAsBox(platformLength, 1);
     
-    PlatformFixtureUD *platformUD = new PlatformFixtureUD();
+    PlatformFixtureUD *platformUD = new PlatformFixtureUD;
     
     b2FixtureDef platformShapeDef;
     platformShapeDef.shape = &rectangle;
@@ -149,12 +154,12 @@
     b2PolygonShape rectangle;
     rectangle.SetAsBox(1, 1);
     
-    ItemFixtureUD *itemUD = new ItemFixtureUD();
+    ItemFixtureUD *itemUD = new ItemFixtureUD;
     itemUD->good = good;
     
     b2FixtureDef itemShapeDef;
     itemShapeDef.shape = &rectangle;
-    itemShapeDef.density = 1.0f;
+    itemShapeDef.density = good?0.0f:1.0f;
     itemShapeDef.friction = 0.0f;
     itemShapeDef.restitution = 0.0f;
     itemShapeDef.userData = itemUD;
@@ -166,16 +171,19 @@
 
 - (void)jump {
     if (m_ballUD->jumpCount < 2) {
+        [m_player stopAllActions];
         b2Vec2 force = b2Vec2(0, 15);
         m_body->SetLinearVelocity(force);
         m_ballUD->jumpCount++;
         jumping = true;
         [self scheduleOnce:@selector(endJump) delay:0.3f];
+        [m_player setTexture:m_jumpingTexture];
     }
 }
 
 - (void)endJump {
     jumping = false;
+    [m_player setTexture:m_walkingTexture];
 }
 
 - (void)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -184,12 +192,6 @@
 
 - (void)ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     [self endJump];
-}
-
-- (void)freeze {
-    for(b2Body *b = m_world->GetBodyList(); b; b=b->GetNext()) {
-        b->SetLinearVelocity(b2Vec2(0, 0));
-    }
 }
 
 - (void)restart {
@@ -229,11 +231,12 @@
     
     m_body->SetTransform(b2Vec2(100/PTM_RATIO, 300/PTM_RATIO), 0.0f);
     [self generatePlatforms];
+    [self schedule:@selector(tick:)];
 }
 
 - (void)die {
     [m_player removeAllChildren];
-    [self freeze];
+    m_body->SetLinearVelocity(b2Vec2(0, 0));
     CCSprite *explosionSprite = [CCSprite spriteWithFile:@"Flare.png"];
     explosionSprite.scale = 0.1f;
     CGSize ballSize = [m_player contentSize];
@@ -268,6 +271,7 @@
     if (((BallFixtureUD *)m_body->GetFixtureList()->GetUserData())->dead) {
         [self die];
         ((BallFixtureUD *)m_body->GetFixtureList()->GetUserData())->dead = false;
+        [self unschedule:@selector(tick:)];
     }
 }
 

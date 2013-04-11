@@ -7,6 +7,7 @@
 //
 
 #import "PlatformSprite.h"
+#import "Globals.h"
 
 @implementation PlatformSprite
 
@@ -17,19 +18,25 @@
 
 - (PlatformSprite *)initWithTiles:(int)tiles {
     self = [super init];
+    float posX = 0-(tiles * PTM_RATIO);
     if (self && tiles > 0) {
         CCSprite *firstSprite = [CCSprite spriteWithFile:@"platformLeft.png"];
-        firstSprite.position = CGPointMake(64.0f*(0.0f - (float)tiles / 2.0f), 0.0f);
+        firstSprite.scale = SPRITE_RATIO;
+        firstSprite.position = CGPointMake(posX, 0.0f);
         firstSprite.anchorPoint = CGPointMake(0.0f, 0.5f);
+        posX += PTM_RATIO*2;
         [self addChild:firstSprite];
         for (int i=1; i < tiles-1; i++) {
             CCSprite *midSprite = [CCSprite spriteWithFile:(i%2==1 ? @"platformCenter1.png" : @"platformCenter2.png")];
-            midSprite.position = CGPointMake(64.0f*((float)i - (float)tiles / 2.0f), 0.0f);
+            midSprite.scale = SPRITE_RATIO;
+            midSprite.position = CGPointMake(posX, 0.0f);
             midSprite.anchorPoint = CGPointMake(0.0f, 0.5f);
+            posX += PTM_RATIO*2;
             [self addChild:midSprite];
         }
         CCSprite *lastSprite = [CCSprite spriteWithFile:@"platformRight.png"];
-        lastSprite.position = CGPointMake(64.0f*((float)(tiles-1) - (float)tiles / 2.0f), 0.0f);
+        lastSprite.scale = SPRITE_RATIO;
+        lastSprite.position = CGPointMake(posX, 0.0f);
         lastSprite.anchorPoint = CGPointMake(0.0f, 0.5f);
         [self addChild:lastSprite];
     }
