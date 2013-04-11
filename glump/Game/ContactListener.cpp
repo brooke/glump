@@ -35,6 +35,9 @@ void ContactListener::BeginContact(b2Contact *contact) {
                 if (contactPoint.x > contact->GetFixtureB()->GetBody()->GetPosition().x) {
                     ((BallFixtureUD *)contact->GetFixtureB()->GetUserData())->dead = true;
                 }
+                else {
+                    ((BallFixtureUD *)contact->GetFixtureB()->GetUserData())->walking = true;
+                }
             }
         }
         else if (fixtureUD->getFixtureType() == kItemFixture) {

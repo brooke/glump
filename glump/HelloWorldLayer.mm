@@ -33,8 +33,9 @@
         m_jumpingTexture = [[CCTextureCache sharedTextureCache] addImage:@"ball_jumping.png"];
         m_walkingTexture = [[CCTextureCache sharedTextureCache] addImage:@"ball_walking.png"];
         m_player = [CCSprite spriteWithTexture:m_walkingTexture];
+        m_player.anchorPoint = ccp(0.5,0.0);
         [m_player setScale:SPRITE_RATIO];
-        m_player.position = ccp(100, 100);
+        m_player.position = ccp(100, 100 - [m_player contentSize].height/2);
         [self addChild:m_player];
         
         m_itemsTexture = [[CCTextureCache sharedTextureCache] addImage:@"blocks.png"];
@@ -152,14 +153,14 @@
     b2Body *itemBody = m_world->CreateBody(&itemBodyDef);
     
     b2PolygonShape rectangle;
-    rectangle.SetAsBox(1, 1);
+    rectangle.SetAsBox(0.5, 0.5);
     
     ItemFixtureUD *itemUD = new ItemFixtureUD;
     itemUD->good = good;
     
     b2FixtureDef itemShapeDef;
     itemShapeDef.shape = &rectangle;
-    itemShapeDef.density = good?0.0f:1.0f;
+    itemShapeDef.density = 1.0;
     itemShapeDef.friction = 0.0f;
     itemShapeDef.restitution = 0.0f;
     itemShapeDef.userData = itemUD;
@@ -178,16 +179,36 @@
         jumping = true;
         [self scheduleOnce:@selector(endJump) delay:0.3f];
         [m_player setTexture:m_jumpingTexture];
+        walkAcknowledged = false;
+        m_ballUD->walking = false;
     }
 }
 
 - (void)endJump {
     jumping = false;
+}
+
+- (void)bounce {
+    CCScaleTo *scaleDown = [CCScaleTo actionWithDuration:0.3 scaleX:1.2 scaleY:0.8];
+    CCScaleTo *scaleUp = [CCScaleTo actionWithDuration:0.3 scaleX:0.9 scaleY:1.1];
+    CCSequence *bounce = [CCSequence actionOne:scaleDown two:scaleUp];
+    CCRepeatForever *repeatedBounce = [CCRepeatForever actionWithAction:bounce];
+    [m_player runAction:repeatedBounce];
+}
+
+- (void)walk {
     [m_player setTexture:m_walkingTexture];
+    CCScaleTo *bounceLow = [CCScaleTo actionWithDuration:0.2 scaleX:1.3 scaleY:0.6];
+    CCScaleTo *bounceHigh = [CCScaleTo actionWithDuration:0.35 scaleX:0.8 scaleY:1.2];
+    [m_player runAction:[CCSequence actions:bounceLow, bounceHigh, nil]];
+    [self scheduleOnce:@selector(bounce) delay:0.55];
 }
 
 - (void)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     [self jump];
+    [m_player stopAllActions];
+    CCScaleTo *scaleFix = [CCScaleTo actionWithDuration:0.5 scale:1.0];
+    [m_player runAction:scaleFix];
 }
 
 - (void)ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -258,13 +279,23 @@
         b2Vec2 force = b2Vec2(0, 15);
         m_body->SetLinearVelocity(force);
     }
+    if (!walkAcknowledged && m_ballUD->walking) {
+        walkAcknowledged = true;
+        [self walk];
+    }
     
     m_world->Step(dt, 10, 10);
     for(b2Body *b = m_world->GetBodyList(); b; b=b->GetNext()) {
         if (b->GetUserData() != NULL) {
             CCNode *spriteData = (CCNode *)b->GetUserData();
-            spriteData.position = ccp(b->GetPosition().x * PTM_RATIO,
-                                      b->GetPosition().y * PTM_RATIO);
+            if (spriteData == m_player) {
+                spriteData.position = ccp(b->GetPosition().x * PTM_RATIO,
+                                          b->GetPosition().y * PTM_RATIO - [m_player contentSize].height/2);
+            }
+            else {
+                spriteData.position = ccp(b->GetPosition().x * PTM_RATIO,
+                                          b->GetPosition().y * PTM_RATIO);
+            }
         }
     }
     

@@ -21,6 +21,7 @@ struct FixtureUserData {
 
 struct BallFixtureUD : public FixtureUserData {
     int jumpCount;
+    bool walking;
     bool dead;
     virtual FixtureType getFixtureType() { return kBallFixture; };
 };

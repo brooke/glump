@@ -26,6 +26,7 @@
     CCTexture2D *m_jumpingTexture;
 
     BallFixtureUD *m_ballUD;
+    bool walkAcknowledged;
     bool jumping;
 }
 
