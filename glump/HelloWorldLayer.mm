@@ -35,7 +35,7 @@
         m_player = [CCSprite spriteWithTexture:m_walkingTexture];
         m_player.anchorPoint = ccp(0.5,0.0);
         [m_player setScale:SPRITE_RATIO];
-        m_player.position = ccp(100, 100 - [m_player contentSize].height/2);
+        m_player.position = ccp(100, 100 - [m_player contentSize].height/2*SPRITE_RATIO);
         [self addChild:m_player];
         
         m_itemsTexture = [[CCTextureCache sharedTextureCache] addImage:@"blocks.png"];
@@ -94,7 +94,7 @@
 - (void)generatePlatforms {
     int platformLength = 20;
     int platformYPos = 1;
-    int distanceToNext = 5;
+    int distanceToNext = 3;
     int platformXPos = 10;
     int good = 1;
     
@@ -173,6 +173,7 @@
 - (void)jump {
     if (m_ballUD->jumpCount < 2) {
         [m_player stopAllActions];
+        [self unschedule:@selector(bounce)];
         b2Vec2 force = b2Vec2(0, 15);
         m_body->SetLinearVelocity(force);
         m_ballUD->jumpCount++;
@@ -189,8 +190,8 @@
 }
 
 - (void)bounce {
-    CCScaleTo *scaleDown = [CCScaleTo actionWithDuration:0.3 scaleX:1.2 scaleY:0.8];
-    CCScaleTo *scaleUp = [CCScaleTo actionWithDuration:0.3 scaleX:0.9 scaleY:1.1];
+    CCScaleTo *scaleDown = [CCScaleTo actionWithDuration:0.3 scaleX:1.2*SPRITE_RATIO scaleY:0.8*SPRITE_RATIO];
+    CCScaleTo *scaleUp = [CCScaleTo actionWithDuration:0.3 scaleX:0.9*SPRITE_RATIO scaleY:1.1*SPRITE_RATIO];
     CCSequence *bounce = [CCSequence actionOne:scaleDown two:scaleUp];
     CCRepeatForever *repeatedBounce = [CCRepeatForever actionWithAction:bounce];
     [m_player runAction:repeatedBounce];
@@ -198,8 +199,8 @@
 
 - (void)walk {
     [m_player setTexture:m_walkingTexture];
-    CCScaleTo *bounceLow = [CCScaleTo actionWithDuration:0.2 scaleX:1.3 scaleY:0.6];
-    CCScaleTo *bounceHigh = [CCScaleTo actionWithDuration:0.35 scaleX:0.8 scaleY:1.2];
+    CCScaleTo *bounceLow = [CCScaleTo actionWithDuration:0.2 scaleX:1.3*SPRITE_RATIO scaleY:0.6*SPRITE_RATIO];
+    CCScaleTo *bounceHigh = [CCScaleTo actionWithDuration:0.35 scaleX:0.8*SPRITE_RATIO scaleY:1.2*SPRITE_RATIO];
     [m_player runAction:[CCSequence actions:bounceLow, bounceHigh, nil]];
     [self scheduleOnce:@selector(bounce) delay:0.55];
 }
@@ -207,7 +208,7 @@
 - (void)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     [self jump];
     [m_player stopAllActions];
-    CCScaleTo *scaleFix = [CCScaleTo actionWithDuration:0.5 scale:1.0];
+    CCScaleTo *scaleFix = [CCScaleTo actionWithDuration:0.5 scale:1.0*SPRITE_RATIO];
     [m_player runAction:scaleFix];
 }
 
@@ -290,7 +291,7 @@
             CCNode *spriteData = (CCNode *)b->GetUserData();
             if (spriteData == m_player) {
                 spriteData.position = ccp(b->GetPosition().x * PTM_RATIO,
-                                          b->GetPosition().y * PTM_RATIO - [m_player contentSize].height/2);
+                                          b->GetPosition().y * PTM_RATIO - [m_player contentSize].height/2*SPRITE_RATIO);
             }
             else {
                 spriteData.position = ccp(b->GetPosition().x * PTM_RATIO,
