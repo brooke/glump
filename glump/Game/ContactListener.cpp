@@ -33,7 +33,7 @@ void ContactListener::BeginContact(b2Contact *contact) {
                 b2Vec2 contactPoint = worldManifold.points[0];
                 
                 if (contactPoint.x > contact->GetFixtureB()->GetBody()->GetPosition().x) {
-                    
+                    ((BallFixtureUD *)contact->GetFixtureB()->GetUserData())->dead = true;
                 }
             }
         }
