@@ -69,9 +69,8 @@
         
         m_player = [CCSprite spriteWithSpriteFrameName:@"prance_0.png"];
         [m_player runAction:[CCRepeatForever actionWithAction:animate]];
-        m_player.anchorPoint = ccp(0.5,0.0);
-        [m_player setScale:SPRITE_RATIO];
-        m_player.position = ccp(100, 100 - [m_player contentSize].height/2*SPRITE_RATIO);
+        m_player.position = ccp(100, 100);
+        //m_player.scale = SPRITE_RATIO;
         [self addChild:m_player];
         
         m_itemsTexture = [[CCTextureCache sharedTextureCache] addImage:@"blocks.png"];
@@ -334,14 +333,8 @@
         b2Body *bn = b->GetNext();
         if (b->GetUserData() != NULL) {
             CCNode *spriteData = (CCNode *)b->GetUserData();
-            if (spriteData == m_player) {
-                spriteData.position = ccp(b->GetPosition().x * PTM_RATIO,
-                                          b->GetPosition().y * PTM_RATIO - [m_player contentSize].height/2*SPRITE_RATIO);
-            }
-            else {
-                spriteData.position = ccp(b->GetPosition().x * PTM_RATIO,
-                                          b->GetPosition().y * PTM_RATIO);
-            }
+            spriteData.position = ccp(b->GetPosition().x * PTM_RATIO,
+                                      b->GetPosition().y * PTM_RATIO);
             if (b->GetPosition().x + m_platformLength*2 < 0) {
                 [self deleteBody:b];
             }
@@ -353,7 +346,7 @@
         NSLog(@"posX: %f platLength: %d screenWidth: %f", m_platform->GetPosition().x, m_platformLength, screen.width);
         m_platformLength = 6 + arc4random() % 10;
         int posX = screen.width/PTM_RATIO; // + 3 + arc4random()%4 + m_platformLength;
-        m_platform = [self addPlatformOfLength:m_platformLength withPosX:posX posY:1+ arc4random()%4];
+        m_platform = [self addPlatformOfLength:m_platformLength withPosX:posX posY:1+ arc4random()%2];
     }
     
     if (((BallFixtureUD *)m_body->GetFixtureList()->GetUserData())->dead) {
