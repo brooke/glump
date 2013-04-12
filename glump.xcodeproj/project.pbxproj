@@ -206,6 +206,12 @@
 		B465E8AC17175F180018323A /* platformLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E8A417175F170018323A /* platformLeft@2x.png */; };
 		B465E8AD17175F180018323A /* platformRight.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E8A517175F170018323A /* platformRight.png */; };
 		B465E8AE17175F180018323A /* platformRight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E8A617175F180018323A /* platformRight@2x.png */; };
+		B465E8B51718A4AC0018323A /* tumble.plist in Resources */ = {isa = PBXBuildFile; fileRef = B465E8AF1718A4AA0018323A /* tumble.plist */; };
+		B465E8B61718A4AC0018323A /* roll.plist in Resources */ = {isa = PBXBuildFile; fileRef = B465E8B01718A4AB0018323A /* roll.plist */; };
+		B465E8B71718A4AC0018323A /* prance.plist in Resources */ = {isa = PBXBuildFile; fileRef = B465E8B11718A4AB0018323A /* prance.plist */; };
+		B465E8B81718A4AC0018323A /* tumble.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E8B21718A4AB0018323A /* tumble.png */; };
+		B465E8B91718A4AC0018323A /* roll.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E8B31718A4AB0018323A /* roll.png */; };
+		B465E8BA1718A4AC0018323A /* prance.png in Resources */ = {isa = PBXBuildFile; fileRef = B465E8B41718A4AC0018323A /* prance.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -608,6 +614,12 @@
 		B465E8A417175F170018323A /* platformLeft@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "platformLeft@2x.png"; path = "Resources/platformLeft@2x.png"; sourceTree = "<group>"; };
 		B465E8A517175F170018323A /* platformRight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = platformRight.png; path = Resources/platformRight.png; sourceTree = "<group>"; };
 		B465E8A617175F180018323A /* platformRight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "platformRight@2x.png"; path = "Resources/platformRight@2x.png"; sourceTree = "<group>"; };
+		B465E8AF1718A4AA0018323A /* tumble.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = tumble.plist; path = Resources/tumble.plist; sourceTree = "<group>"; };
+		B465E8B01718A4AB0018323A /* roll.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = roll.plist; path = Resources/roll.plist; sourceTree = "<group>"; };
+		B465E8B11718A4AB0018323A /* prance.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = prance.plist; path = Resources/prance.plist; sourceTree = "<group>"; };
+		B465E8B21718A4AB0018323A /* tumble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tumble.png; path = Resources/tumble.png; sourceTree = "<group>"; };
+		B465E8B31718A4AB0018323A /* roll.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = roll.png; path = Resources/roll.png; sourceTree = "<group>"; };
+		B465E8B41718A4AC0018323A /* prance.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = prance.png; path = Resources/prance.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -685,6 +697,12 @@
 		B465E6311713568F0018323A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B465E8AF1718A4AA0018323A /* tumble.plist */,
+				B465E8B01718A4AB0018323A /* roll.plist */,
+				B465E8B11718A4AB0018323A /* prance.plist */,
+				B465E8B21718A4AB0018323A /* tumble.png */,
+				B465E8B31718A4AB0018323A /* roll.png */,
+				B465E8B41718A4AC0018323A /* prance.png */,
 				B465E89F17175F160018323A /* platformCenter1.png */,
 				B465E8A017175F160018323A /* platformCenter1@2x.png */,
 				B465E8A117175F160018323A /* platformCenter2.png */,
@@ -1332,6 +1350,12 @@
 				B465E8AC17175F180018323A /* platformLeft@2x.png in Resources */,
 				B465E8AD17175F180018323A /* platformRight.png in Resources */,
 				B465E8AE17175F180018323A /* platformRight@2x.png in Resources */,
+				B465E8B51718A4AC0018323A /* tumble.plist in Resources */,
+				B465E8B61718A4AC0018323A /* roll.plist in Resources */,
+				B465E8B71718A4AC0018323A /* prance.plist in Resources */,
+				B465E8B81718A4AC0018323A /* tumble.png in Resources */,
+				B465E8B91718A4AC0018323A /* roll.png in Resources */,
+				B465E8BA1718A4AC0018323A /* prance.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

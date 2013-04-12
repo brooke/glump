@@ -13,13 +13,15 @@
 #import "FixtureUserData.h"
 
 @interface HelloWorldLayer : CCLayer {
+    CGSize screen;
     
     b2World *m_world;
     b2Body *m_body;
     CCSprite *m_player;
-    NSMutableArray *m_platforms;
-    NSMutableArray *m_targets;
     ContactListener *m_listener;
+    
+    b2Body *m_platform;
+    int m_platformLength;
     
     CCTexture2D *m_itemsTexture;
     CCTexture2D *m_walkingTexture;

@@ -27,12 +27,48 @@
     
     if ((self=[super init])) {
         [self setTouchEnabled:YES];
-        CGSize winSize = [CCDirector sharedDirector].winSize;
+        screen = [CCDirector sharedDirector].winSize;
         
         // Create sprite and add it to the layer
-        m_jumpingTexture = [[CCTextureCache sharedTextureCache] addImage:@"ball_jumping.png"];
-        m_walkingTexture = [[CCTextureCache sharedTextureCache] addImage:@"ball_walking.png"];
-        m_player = [CCSprite spriteWithTexture:m_walkingTexture];
+//        m_jumpingTexture = [[CCTextureCache sharedTextureCache] addImage:@"ball_jumping.png"];
+//        m_walkingTexture = [[CCTextureCache sharedTextureCache] addImage:@"ball_walking.png"];
+        
+        [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile:@"prance.plist"];
+        NSMutableArray *walkAnimFrames = [NSMutableArray array];
+        for(int i = 0; i < 8; ++i) {
+            [walkAnimFrames addObject:
+             [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName:
+              [NSString stringWithFormat:@"prance_%d.png", i]]];
+        }
+        
+        CCAnimation *prance = [CCAnimation animationWithSpriteFrames:walkAnimFrames delay:0.1f];
+        [[CCAnimationCache sharedAnimationCache] addAnimation:prance name:@"prance"];
+        CCAnimate *animate = [CCAnimate actionWithAnimation:prance restoreOriginalFrame:NO];
+        
+        [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile:@"roll.plist"];
+        NSMutableArray *dieAnimFrames = [NSMutableArray array];
+        for(int i = 0; i < 6; ++i) {
+            [dieAnimFrames addObject:
+             [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName:
+              [NSString stringWithFormat:@"roll_%d.png", i]]];
+        }
+        
+        CCAnimation *roll = [CCAnimation animationWithSpriteFrames:dieAnimFrames delay:0.1f];
+        [[CCAnimationCache sharedAnimationCache] addAnimation:roll name:@"roll"];
+        
+        [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile:@"tumble.plist"];
+        NSMutableArray *jumpAnimFrames = [NSMutableArray array];
+        for(int i = 0; i < 8; ++i) {
+            [jumpAnimFrames addObject:
+             [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName:
+              [NSString stringWithFormat:@"tumble_%d.png", i]]];
+        }
+        
+        CCAnimation *tumble = [CCAnimation animationWithSpriteFrames:jumpAnimFrames delay:0.1f];
+        [[CCAnimationCache sharedAnimationCache] addAnimation:tumble name:@"tumble"];
+        
+        m_player = [CCSprite spriteWithSpriteFrameName:@"prance_0.png"];
+        [m_player runAction:[CCRepeatForever actionWithAction:animate]];
         m_player.anchorPoint = ccp(0.5,0.0);
         [m_player setScale:SPRITE_RATIO];
         m_player.position = ccp(100, 100 - [m_player contentSize].height/2*SPRITE_RATIO);
@@ -53,7 +89,9 @@
         ballBodyDef.linearDamping = 1.0;
         m_body = m_world->CreateBody(&ballBodyDef);
         
-        [self generatePlatforms];
+        //[self generatePlatforms];
+        m_platformLength = 20;
+        m_platform = [self addPlatformOfLength:m_platformLength withPosX:10 posY:1];
         
         // Create edges around the entire screen
         b2BodyDef groundBodyDef;
@@ -67,11 +105,11 @@
         boxShapeDef.shape = &groundEdge;
         
         //wall definitions
-        groundEdge.Set(b2Vec2(0,0), b2Vec2(winSize.width/PTM_RATIO, 0));
+        groundEdge.Set(b2Vec2(0,0), b2Vec2(screen.width/PTM_RATIO, 0));
         groundBody->CreateFixture(&boxShapeDef);
         
         b2CircleShape circle;
-        circle.m_radius = 1;
+        circle.m_radius = 2;
         
         m_ballUD = new BallFixtureUD();
         m_ballUD->jumpCount = 0;
@@ -112,7 +150,7 @@
     }
 }
 
-- (void)addPlatformOfLength:(int)platformLength withPosX:(int)platformXPos posY:(int)platformYPos {
+- (b2Body *)addPlatformOfLength:(int)platformLength withPosX:(int)platformXPos posY:(int)platformYPos {
     PlatformSprite *platform = [PlatformSprite platformWithTiles:platformLength];
     platform.position = ccp(platformXPos*PTM_RATIO*2, platformYPos*PTM_RATIO*2);
     [self addChild:platform];
@@ -139,6 +177,7 @@
     
     b2Vec2 force = b2Vec2(-15, 0);
     platformBody->SetLinearVelocity(force);
+    return platformBody;
 }
 
 - (void)addItemWithPosX:(int)itemXPos posY:(int)itemYPos andGoodness:(int)good {
@@ -179,7 +218,10 @@
         m_ballUD->jumpCount++;
         jumping = true;
         [self scheduleOnce:@selector(endJump) delay:0.3f];
-        [m_player setTexture:m_jumpingTexture];
+        
+        CCAnimation *tumble = [[CCAnimationCache sharedAnimationCache] animationByName:@"tumble"];
+        CCRepeatForever *jump = [CCRepeatForever actionWithAction:[CCAnimate actionWithAnimation:tumble]];
+        [m_player runAction:jump];
         walkAcknowledged = false;
         m_ballUD->walking = false;
     }
@@ -189,31 +231,28 @@
     jumping = false;
 }
 
-- (void)bounce {
-    CCScaleTo *scaleDown = [CCScaleTo actionWithDuration:0.3 scaleX:1.2*SPRITE_RATIO scaleY:0.8*SPRITE_RATIO];
-    CCScaleTo *scaleUp = [CCScaleTo actionWithDuration:0.3 scaleX:0.9*SPRITE_RATIO scaleY:1.1*SPRITE_RATIO];
-    CCSequence *bounce = [CCSequence actionOne:scaleDown two:scaleUp];
-    CCRepeatForever *repeatedBounce = [CCRepeatForever actionWithAction:bounce];
-    [m_player runAction:repeatedBounce];
-}
-
 - (void)walk {
-    [m_player setTexture:m_walkingTexture];
-    CCScaleTo *bounceLow = [CCScaleTo actionWithDuration:0.2 scaleX:1.3*SPRITE_RATIO scaleY:0.6*SPRITE_RATIO];
-    CCScaleTo *bounceHigh = [CCScaleTo actionWithDuration:0.35 scaleX:0.8*SPRITE_RATIO scaleY:1.2*SPRITE_RATIO];
-    [m_player runAction:[CCSequence actions:bounceLow, bounceHigh, nil]];
-    [self scheduleOnce:@selector(bounce) delay:0.55];
+    [m_player stopAllActions];
+    CCAnimation *prance = [[CCAnimationCache sharedAnimationCache] animationByName:@"prance"];
+    CCRepeatForever *walk = [CCRepeatForever actionWithAction:[CCAnimate actionWithAnimation:prance]];
+    [m_player runAction:walk];
+
 }
 
 - (void)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     [self jump];
-    [m_player stopAllActions];
-    CCScaleTo *scaleFix = [CCScaleTo actionWithDuration:0.5 scale:1.0*SPRITE_RATIO];
-    [m_player runAction:scaleFix];
 }
 
 - (void)ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     [self endJump];
+}
+
+- (void)deleteBody:(b2Body *)body {
+    [((CCNode *)body->GetUserData()) removeFromParentAndCleanup:YES];
+    for (b2Fixture *f=body->GetFixtureList(); f; f=f->GetNext()) {
+        delete f->GetUserData();
+    }
+    m_world->DestroyBody(body);
 }
 
 - (void)restart {
@@ -221,17 +260,18 @@
     while (b) {
         b2Body *bn = b->GetNext();
         if (b != m_body) {
-            [((CCNode *)b->GetUserData()) removeFromParentAndCleanup:YES];
-            for (b2Fixture *f=b->GetFixtureList(); f; f=f->GetNext()) {
-                delete f->GetUserData();
-            }
-            m_world->DestroyBody(b);
+            [self deleteBody:b];
         }
         b = bn;
     }
     [m_player removeAllChildrenWithCleanup:YES];
     [m_player setVisible:YES];
     [m_player setOpacity:255];
+    
+    [m_player stopAllActions];
+    CCAnimation *prance = [[CCAnimationCache sharedAnimationCache] animationByName:@"prance"];
+    CCRepeatForever *walk = [CCRepeatForever actionWithAction:[CCAnimate actionWithAnimation:prance]];
+    [m_player runAction:walk];
     
     // Create edges around the entire screen
     b2BodyDef groundBodyDef;
@@ -247,12 +287,13 @@
     boxShapeDef.shape = &groundEdge;
     
     //wall definitions
-    CGSize winSize = [CCDirector sharedDirector].winSize;
-    groundEdge.Set(b2Vec2(0,0), b2Vec2(winSize.width/PTM_RATIO, 0));
+    groundEdge.Set(b2Vec2(0,0), b2Vec2(screen.width/PTM_RATIO, 0));
     groundBody->CreateFixture(&boxShapeDef);
     
     m_body->SetTransform(b2Vec2(100/PTM_RATIO, 300/PTM_RATIO), 0.0f);
-    [self generatePlatforms];
+    //[self generatePlatforms];
+    m_platformLength = 20;
+    m_platform = [self addPlatformOfLength:m_platformLength withPosX:10 posY:1];
     [self schedule:@selector(tick:)];
 }
 
@@ -265,13 +306,13 @@
     explosionSprite.position = ccp(ballSize.width/2,ballSize.height/2);
     [m_player addChild:explosionSprite];
     CCScaleTo *scaleFlare = [CCScaleTo actionWithDuration:0.3f scale:1.0f];
-    CCDelayTime *delayAction = [CCDelayTime actionWithDuration:0.3f];
-    CCFadeOut *fadePlayer = [CCFadeOut actionWithDuration:0.05f];
     CCFadeOut *fadeFlare = [CCFadeOut actionWithDuration:0.05f];
-    CCSequence *playerSequence = [CCSequence actionOne:delayAction two:fadePlayer];
     CCSequence *explosionSequence = [CCSequence actionOne:scaleFlare two:fadeFlare];
     [explosionSprite runAction:explosionSequence];
-    [m_player runAction:playerSequence];
+    [m_player stopAllActions];
+    CCAnimation *roll = [[CCAnimationCache sharedAnimationCache] animationByName:@"roll"];
+    CCRepeatForever *die = [CCRepeatForever actionWithAction:[CCAnimate actionWithAnimation:roll]];
+    [m_player runAction:die];
     [self scheduleOnce:@selector(restart) delay:1.0];
 }
 
@@ -286,7 +327,11 @@
     }
     
     m_world->Step(dt, 10, 10);
-    for(b2Body *b = m_world->GetBodyList(); b; b=b->GetNext()) {
+    
+    // can't iterate with for loop - body may be deleted
+    b2Body *b = m_world->GetBodyList();
+    while (b) {
+        b2Body *bn = b->GetNext();
         if (b->GetUserData() != NULL) {
             CCNode *spriteData = (CCNode *)b->GetUserData();
             if (spriteData == m_player) {
@@ -297,7 +342,18 @@
                 spriteData.position = ccp(b->GetPosition().x * PTM_RATIO,
                                           b->GetPosition().y * PTM_RATIO);
             }
+            if (b->GetPosition().x + m_platformLength*2 < 0) {
+                [self deleteBody:b];
+            }
         }
+        b=bn;
+    }
+    
+    if (m_platform->GetPosition().x + m_platformLength < screen.width/PTM_RATIO + 1) {
+        NSLog(@"posX: %f platLength: %d screenWidth: %f", m_platform->GetPosition().x, m_platformLength, screen.width);
+        m_platformLength = 6 + arc4random() % 10;
+        int posX = screen.width/PTM_RATIO; // + 3 + arc4random()%4 + m_platformLength;
+        m_platform = [self addPlatformOfLength:m_platformLength withPosX:posX posY:1+ arc4random()%4];
     }
     
     if (((BallFixtureUD *)m_body->GetFixtureList()->GetUserData())->dead) {
