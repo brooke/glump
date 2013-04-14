@@ -76,7 +76,7 @@
         m_itemsTexture = [[CCTextureCache sharedTextureCache] addImage:@"blocks.png"];
         
         // Create a world
-        b2Vec2 gravity = b2Vec2(0.0f, -50.0f);
+        b2Vec2 gravity = b2Vec2(0.0f, -20.0f);
         m_world = new b2World(gravity);
         m_listener = new ContactListener();
         
@@ -212,8 +212,8 @@
     if (m_ballUD->jumpCount < 2) {
         [m_player stopAllActions];
         [self unschedule:@selector(bounce)];
-        b2Vec2 force = b2Vec2(0, 15);
-        m_body->SetLinearVelocity(force);
+//        b2Vec2 force = b2Vec2(0, 8);
+//        m_body->SetLinearVelocity(force);
         m_ballUD->jumpCount++;
         jumping = true;
         [self scheduleOnce:@selector(endJump) delay:0.3f];
@@ -317,7 +317,7 @@
 
 - (void)tick:(ccTime) dt {
     if (jumping) {
-        b2Vec2 force = b2Vec2(0, 15);
+        b2Vec2 force = b2Vec2(0, 8);
         m_body->SetLinearVelocity(force);
     }
     if (!walkAcknowledged && m_ballUD->walking) {
