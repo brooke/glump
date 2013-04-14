@@ -345,8 +345,8 @@
     if (m_platform->GetPosition().x + m_platformLength/2 < screen.width/PTM_RATIO + 1) {
         NSLog(@"posX: %f platLength: %d screenWidth: %f", m_platform->GetPosition().x, m_platformLength, screen.width);
         m_platformLength = (3 + arc4random() % 4)*2;
-        int posX = screen.width/PTM_RATIO + m_platformLength/2;
-        m_platform = [self addPlatformOfLength:m_platformLength withPosX:posX posY:1];
+        int posX = screen.width/PTM_RATIO + m_platformLength/2 + 3 + arc4random()%4;
+        m_platform = [self addPlatformOfLength:m_platformLength withPosX:posX posY:1 + arc4random()%3];
     }
     
     if (((BallFixtureUD *)m_body->GetFixtureList()->GetUserData())->dead) {

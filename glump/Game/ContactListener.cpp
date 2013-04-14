@@ -31,7 +31,8 @@ void ContactListener::BeginContact(b2Contact *contact) {
             
             if (contact->GetFixtureA()->GetBody()->GetPosition().y + 0.95 >
                 contact->GetFixtureB()->GetBody()->GetPosition().y) {
-                ((BallFixtureUD *)contact->GetFixtureB()->GetUserData())->dead = true;
+                contact->SetEnabled(false);
+                //((BallFixtureUD *)contact->GetFixtureB()->GetUserData())->dead = true;
             }
             else {
                 ((BallFixtureUD *)contact->GetFixtureB()->GetUserData())->walking = true;
@@ -51,6 +52,6 @@ void ContactListener::BeginContact(b2Contact *contact) {
 
     b2EdgeAndCircleContact *groundContact = dynamic_cast<b2EdgeAndCircleContact *>(contact);
     if (groundContact) {
-        ((BallFixtureUD *)contact->GetFixtureB()->GetUserData())->dead = true;
+        //((BallFixtureUD *)contact->GetFixtureB()->GetUserData())->dead = true;
     }
 }
