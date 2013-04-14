@@ -10,6 +10,6 @@
 #define glump_Globals_h
 
 #define SPRITE_RATIO ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)?1.0:0.5)
-#define PTM_RATIO (SPRITE_RATIO*32.0)
+#define PTM_RATIO (SPRITE_RATIO*64.0)
 
 #endif

@@ -70,7 +70,7 @@
         m_player = [CCSprite spriteWithSpriteFrameName:@"prance_0.png"];
         [m_player runAction:[CCRepeatForever actionWithAction:animate]];
         m_player.position = ccp(100, 100);
-        //m_player.scale = SPRITE_RATIO;
+        m_player.scale = SPRITE_RATIO;
         [self addChild:m_player];
         
         m_itemsTexture = [[CCTextureCache sharedTextureCache] addImage:@"blocks.png"];
@@ -108,7 +108,7 @@
         groundBody->CreateFixture(&boxShapeDef);
         
         b2CircleShape circle;
-        circle.m_radius = 2;
+        circle.m_radius = 1;
         
         m_ballUD = new BallFixtureUD();
         m_ballUD->jumpCount = 0;
@@ -151,18 +151,18 @@
 
 - (b2Body *)addPlatformOfLength:(int)platformLength withPosX:(int)platformXPos posY:(int)platformYPos {
     PlatformSprite *platform = [PlatformSprite platformWithTiles:platformLength];
-    platform.position = ccp(platformXPos*PTM_RATIO*2, platformYPos*PTM_RATIO*2);
+    platform.position = ccp(platformXPos*PTM_RATIO, platformYPos*PTM_RATIO);
     [self addChild:platform];
     
     // Create ball body and shape
     b2BodyDef platformBodyDef;
     platformBodyDef.type = b2_kinematicBody;
-    platformBodyDef.position.Set(platformXPos*2, platformYPos*2);
+    platformBodyDef.position.Set(platformXPos, platformYPos);
     platformBodyDef.userData = platform;
     b2Body *platformBody = m_world->CreateBody(&platformBodyDef);
     
     b2PolygonShape rectangle;
-    rectangle.SetAsBox(platformLength, 1);
+    rectangle.SetAsBox(platformLength/2, 0.5);
     
     PlatformFixtureUD *platformUD = new PlatformFixtureUD;
     
@@ -174,7 +174,7 @@
     platformShapeDef.userData = platformUD;
     platformBody->CreateFixture(&platformShapeDef);
     
-    b2Vec2 force = b2Vec2(-15, 0);
+    b2Vec2 force = b2Vec2(-8, 0);
     platformBody->SetLinearVelocity(force);
     return platformBody;
 }
@@ -204,7 +204,7 @@
     itemShapeDef.userData = itemUD;
     itemBody->CreateFixture(&itemShapeDef);
     
-    b2Vec2 force = b2Vec2(-15, 0);
+    b2Vec2 force = b2Vec2(-8, 0);
     itemBody->SetLinearVelocity(force);
 }
 
@@ -335,18 +335,18 @@
             CCNode *spriteData = (CCNode *)b->GetUserData();
             spriteData.position = ccp(b->GetPosition().x * PTM_RATIO,
                                       b->GetPosition().y * PTM_RATIO);
-            if (b->GetPosition().x + m_platformLength*2 < 0) {
+            if (b->GetPosition().x + m_platformLength < 0) {
                 [self deleteBody:b];
             }
         }
         b=bn;
     }
     
-    if (m_platform->GetPosition().x + m_platformLength < screen.width/PTM_RATIO + 1) {
+    if (m_platform->GetPosition().x + m_platformLength/2 < screen.width/PTM_RATIO + 1) {
         NSLog(@"posX: %f platLength: %d screenWidth: %f", m_platform->GetPosition().x, m_platformLength, screen.width);
-        m_platformLength = 6 + arc4random() % 10;
-        int posX = screen.width/PTM_RATIO; // + 3 + arc4random()%4 + m_platformLength;
-        m_platform = [self addPlatformOfLength:m_platformLength withPosX:posX posY:1+ arc4random()%2];
+        m_platformLength = (3 + arc4random() % 4)*2;
+        int posX = screen.width/PTM_RATIO + m_platformLength/2 + 3 + arc4random()%4;
+        m_platform = [self addPlatformOfLength:m_platformLength withPosX:posX posY:1 + arc4random()%3];
     }
     
     if (((BallFixtureUD *)m_body->GetFixtureList()->GetUserData())->dead) {

@@ -29,15 +29,12 @@ void ContactListener::BeginContact(b2Contact *contact) {
             worldManifold.Initialize(&manifold, xfA, contact->GetFixtureA()->GetShape()->m_radius,
                                      xfB, contact->GetFixtureB()->GetShape()->m_radius);
             
-            if (manifold.pointCount > 0) {
-                b2Vec2 contactPoint = worldManifold.points[0];
-                
-                if (contactPoint.x > contact->GetFixtureB()->GetBody()->GetPosition().x) {
-                    ((BallFixtureUD *)contact->GetFixtureB()->GetUserData())->dead = true;
-                }
-                else {
-                    ((BallFixtureUD *)contact->GetFixtureB()->GetUserData())->walking = true;
-                }
+            if (contact->GetFixtureA()->GetBody()->GetPosition().y + 0.95 >
+                contact->GetFixtureB()->GetBody()->GetPosition().y) {
+                ((BallFixtureUD *)contact->GetFixtureB()->GetUserData())->dead = true;
+            }
+            else {
+                ((BallFixtureUD *)contact->GetFixtureB()->GetUserData())->walking = true;
             }
         }
         else if (fixtureUD->getFixtureType() == kItemFixture) {
