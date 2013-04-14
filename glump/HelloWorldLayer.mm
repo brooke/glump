@@ -325,6 +325,11 @@
         [self walk];
     }
     
+    if (m_body->GetLinearVelocity().x < 0) {
+        float y = m_body->GetLinearVelocity().y;
+        m_body->SetLinearVelocity(b2Vec2(0,y));
+    }
+
     m_world->Step(dt, 10, 10);
     
     // can't iterate with for loop - body may be deleted

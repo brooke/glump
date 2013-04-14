@@ -29,7 +29,7 @@ void ContactListener::BeginContact(b2Contact *contact) {
             worldManifold.Initialize(&manifold, xfA, contact->GetFixtureA()->GetShape()->m_radius,
                                      xfB, contact->GetFixtureB()->GetShape()->m_radius);
             
-            if (contact->GetFixtureA()->GetBody()->GetPosition().y + 0.95 >
+            if (contact->GetFixtureA()->GetBody()->GetPosition().y + 1.45 >
                 contact->GetFixtureB()->GetBody()->GetPosition().y) {
                 ((BallFixtureUD *)contact->GetFixtureB()->GetUserData())->dead = true;
             }
